@@ -1,0 +1,235 @@
+APM 2.1.2        ?? ??? 2016
+----------------------------
+Fixed:
+- Wrong path for mysql.h prevents Windows build
+- Possible segmentation fault and invalid errors under PHP 7.0
+- Make error: duplicate symbol for architecture x86_64 #25
+- Build with PHP 7.1 #44 (Thanks Remi Collet)
+
+APM 2.1.1        29 Mar 2016
+----------------------------
+Fixed:
+- Compilation issue with ZTS
+
+APM 2.1.0        29 Mar 2016
+----------------------------
+Added:
+- Support for PHP 7
+- collecting HTTP method
+
+Improved:
+- Better coexistence with Xdebug
+
+APM 2.0.5        17 Jun 2015
+----------------------------
+Fixed:
+- missing apm.statsd_exception_mode and apm.socket_exception_mode
+- sqlite3.h file not found in Windows build
+
+Improved:
+- Minor optimizations in stacktrace creation
+
+APM 2.0.4        01 Jun 2015
+----------------------------
+Fixed:
+- Temporary buffer not freed when generating stacktraces.
+- Arguments in stacktraces dumped with a bigger depth than what is configured with apm.dump_max_depth.
+
+APM 2.0.3        18 May 2015
+----------------------------
+Fixed:
+- Double initialization of request data.
+  This could lead to data being present twice in DBs (reproducible with both SQLite and MySQL enabled).
+Changed:
+- Default value of apm.dump_max_depth decreased to 1.
+  With today's application complexity, the amount of data collected in stacktraces
+  including arguments can lead to several thousands of MiB of memory consumed.
+  We recommend increasing this value with care.
+- Weird things could happen when changing 'apm.enabled' during a request. It doesn't make much sense to support
+  in request activation/deactivation. 'apm.enabled' is therefor now PHP_INI_SYSTEM.
+
+APM 2.0.2        09 Mar 2015
+----------------------------
+Fixed:
+- Compilation issue on non ZTS setup
+
+APM 2.0.1        09 Mar 2015
+----------------------------
+Fixed:
+- #10: Bad configure message (thx @RemiCollet)
+- #11: Bad version reported (thx @RemiCollet)
+- #13: ZTS build is broken (thx @RemiCollet)
+- APM not working with XDebug
+  If Xdebug is enabled as in xdebug_enable() or xdebug.default_enable, APM error callback will not be called.
+  Use xdebug.default_enable=0 or xdebug_disable() to go through APM error handling.
+
+Improved:
+- #12: Installation of files via pecl install
+- StatsD driver (thanks @0livier for the discovery!)
+
+Changed:
+- Web frontend located on its own repository: https://github.com/patrickallaert/php-apm-web
+
+APM 2.0.0        20 Feb 2015
+----------------------------
+New drivers:
+- StatsD
+- Socket
+
+Added:
+- Per-driver option 'apm.&lt;storage driver&gt;_store_silenced_events that lets you toggle whether to store silenced (@-ed) errors (thanks Mathieu Kooiman (@mathieuk))
+- apm.*_exception_mode configuration to control exception collection
+- Auto creation of SQLite and MariaDB/MySQL schemas
+- Stats:
+  - User and System CPU time
+  - Memory Peak Usage
+  - HTTP response code
+- 'application_id' field to categorize the issues per application/server/environment/...
+- Support for compilation on Ubuntu (thanks Olivier Garcia (@0livier))
+
+Changed:
+- Deep refactoring:
+  - New DB schema
+  - No more native functions, retrieval of data is directly made in PHP
+- SQLite drivder attempts to create the directory structure by himself
+- Renamed 'slow request' to 'stats'
+- Connect to MySQL once and reconnect if needed
+- Small UI improvements
+- Avoiding int / uint conversion
+- MariaDB/MySQL driver activated by default
+
+Fixed:
+- Parse error test failing on PHP 5.4
+- Possible segfault with APM_DEBUG used outside RINIT/RSHUTDOWN phases
+- Missing disconnect from SQLite DB if changed with ini_set()
+- Too few arguments to sprintf() with MariaDB/MySQL backend
+- Possible segfault with PHP 5.5
+- Segmentation fault with "zend_mm_heap corrupted" message.
+- Missing zval reference incrementing
+- Out of memory error in backtrace generation
+- Removed hard-coded limit of 64kB json data
+- Do not activate silence handler if APM is not enabled
+- Some compiler warnings
+- Incorrect status propagation for PHP_RSHUTDOWN_FUNCTION
+- Several memory leaks
+
+Removed:
+- Deffered processing (can't be easily implemented in a generic and driver
+  agnostic way. Depending on the drivers, some deffered processing will
+  happen inside them.)
+- Reference SQL files, see source code for that ;-)
+
+APM 2.0.0alpha1  11 May 2013
+----------------------------
+Changed:
+- Deep refactoring:
+  - New DB schema
+  - No more native functions, retrieval of data is directly made in PHP
+
+APM 1.1.0RC2     11 May 2013
+----------------------------
+Changed:
+- upgraded UI by using tweeter boostrap and upgrading jqGrid
+
+APM 1.1.0RC1     19 Oct 2012
+----------------------------
+Added:
+- --with-debugfile[=FILE] option to permit debugging of APM
+
+Changed:
+- Lazy loading the connection to the SQLite database
+
+Fixed:
+- Ordering by URL not working
+- Decouple mysql backend from sqlite3 (#62288)
+- Invalid UTF-8 may cause backtrace to be truncated in MySQL driver (#62244)
+
+APM 1.1.0beta4   07 Jun 2012
+----------------------------
+Fixed:
+- Bug #62187: The MySQL driver does not store a timestamp for an event (Thanks to mathieu at mollie dot nl, HMWiesinger at gmx dot at).
+- Bug #62012: No data collected
+- Missing post_vars column definition in SQL creation scripts.
+
+Added:
+- Referer
+
+Changed:
+- Storing all ts in SQLite as integers
+
+APM 1.1.0beta3   27 May 2012
+----------------------------
+Fixed:
+- Possible memory not being freed
+- Segmentation fault preventing the collection of data (#62012)
+
+APM 1.1.0beta2   06 May 2012
+----------------------------
+Fixed:
+- Version 1.1.0beta* should be marked as "beta" and not as "stable"
+- APM-1.1.0beta1.tgz file contains only package.xml (#61937)
+- Some GCC warnings when built with PHP 5.4
+- Error callback arguments must be copied in every cases
+- Prevent calling the original error handler if Xdebug is loaded
+- Possible segfault if MySQL server connection link is gone
+
+APM 1.1.0beta1   02 Apr 2012
+----------------------------
+Added:
+- New information stored: IP, host, POST data, cookies
+- Configuration to limit the depth when dumping variables (apm.dump_max_depth)
+
+Removed:
+- JSON flag for apm_get_*_events and apm_get_*_slow_requests
+
+Changed:
+- Some UI refactoring
+- Minor optimizations
+
+Fixed:
+- Installation failing because of config file being named "config.php"
+  pecl/pear installer issue?
+- Some compilation warnings
+- Deffered mode taking only the *mysql* error_reporting into account
+- APM not correctly linking to libmysqlclient
+- Possible buffer overflows
+- Compilation issues related to timelib with PHP >= 5.3.9
+
+APM 1.0.1        12 Nov 2011
+----------------------------
+Changed:
+- Base install dir for web files, now in php/PECL/APM
+
+Fixed:
+- Bug #60276 pecl install fail installing APM
+
+APM 1.0.0        14 Jun 2011
+----------------------------
+Fixed:
+- Script filename could possibly not be filled in case of slow request
+
+APM 1.0.0beta3    7 Nov 2010
+----------------------------
+Added:
+- MySQL driver
+- Per driver error reporting level
+- Asynchronous processing of events (config option: apm.deffered_processing)
+
+Changed:
+- Code refactored to make use of 'APM drivers'
+
+Fixed:
+- APM cannot be compiled with PHP < 5.2.2
+- Bug #17502: Drivers' rshutdown run only when slow_request tracking is enabled.
+- Bug #17512: Sqlite connections aren't closed at the end of the request.
+- Bug #17513: Using MySQL driver, only events of the first incoming request are stored.
+- Bug #19421: apm.*_error_reporting is ignored.
+
+APM 1.0.0beta2   29 Nov 2009
+----------------------------
+Fixed:
+- Path used in tests were hardly fixed
+
+APM 1.0.0beta1   29 Nov 2009
+----------------------------
+- Initial release.
