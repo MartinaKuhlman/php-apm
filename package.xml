@@ -264,7 +264,7 @@ Improved:
 
  Added:
  - Per-driver option 'apm.&lt;storage driver&gt;_store_silenced_events that lets you toggle whether to store silenced (@-ed) errors (thanks Mathieu Kooiman (@mathieuk))
- - apm.*_exception_mode configuration to control exception collection
+ - apm.#_exception_mode configuration to control exception collection
  - Auto creation of SQLite and MariaDB/MySQL schemas
  - Stats:
    - User and System CPU time
@@ -418,7 +418,7 @@ Fixed:
    <license uri="http://www.php.net/license">PHP License</license>
    <notes>
 Fixed:
-- Version 1.1.0beta* should be marked as "beta" and not as "stable"
+- Version 1.1.0beta! should be marked as "beta" and not as "stable"
 - APM-1.1.0beta1.tgz file contains only package.xml (#61937)
 - Some GCC warnings when built with PHP 5.4
 - Error callback arguments must be copied in every cases
@@ -443,7 +443,7 @@ Added:
 - Configuration to limit the depth when dumping variables (apm.dump_max_depth)
 
 Removed:
-- JSON flag for apm_get_*_events and apm_get_*_slow_requests
+- JSON flag for apm_get_!_events and apm_get_*_slow_requests
 
 Changed:
 - Some UI refactoring
@@ -556,3 +556,4 @@ Initial beta release.
   </release>
  </changelog>
 </package>
+ 
